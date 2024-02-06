@@ -1,0 +1,99 @@
+import requests
+import psycopg2
+from shapely.geometry import box
+from shapely.wkb import dumps
+import json
+
+# Function to extract geometry-free attributes from the Overpass API based on a grid
+def extract_attributes_within_grid(api_url, grid_table, connection_string):
+    # List of desired categories
+    desired_categories = [
+        "motorway", "motorway_link", "motorway_junction",
+        "trunk", "trunk_link",
+        "primary", "primary_link",
+        "secondary", "secondary_link",
+        "tertiary", "tertiary_link",
+        "residential", "living_street", "service",
+        "unclassified", "road"
+    ]
+
+    # Connect to the PostGIS database
+    conn = psycopg2.connect(connection_string)
+    cursor = conn.cursor()
+
+    # Create the table if it doesn't exist
+    print("Checking and creating the table...")
+    cursor.execute(f'''
+        CREATE TABLE IF NOT EXISTS public.tb_highway_surface(
+            id SERIAL PRIMARY KEY,
+            osm_id BIGINT,
+            surface VARCHAR
+        );
+    ''')
+
+    # Add a unique key constraint to the osm_id column if it doesn't exist
+    cursor.execute("ALTER TABLE IF EXISTS public.tb_highway_surface ADD CONSTRAINT osm_id_unique UNIQUE (osm_id);")
+    conn.commit()
+
+    # Query the grid and iterate over each cell
+    print("Querying and iterating over the grid...")
+    cursor.execute(f'SELECT id, "left", top, "right", bottom FROM {grid_table};')
+    for row in cursor.fetchall():
+        cell_id, left, top, right, bottom = row
+
+        # Create a bounding box based on the cell's limits
+        bounding_box = box(left, bottom, right, top)
+
+        # Convert the bounding box to WKB (Well-Known Binary)
+        bounding_box_wkb = dumps(bounding_box)
+
+        # Build the Overpass query to get geometry-free attributes within the cell
+        overpass_query = (
+            f'[out:json];'
+            f'way({bounding_box.bounds[1]},{bounding_box.bounds[0]},'
+            f'{bounding_box.bounds[3]},{bounding_box.bounds[2]})["highway"]["surface"];'
+            f'out;'
+        )
+
+        # Make the request to the Overpass API
+        print(f"Requesting data for cell {cell_id}...")
+        try:
+            response = requests.post(api_url, data={'data': overpass_query})
+            response.raise_for_status()  # Check if the request was successful
+            data = response.json()
+
+            # Process the data and extract geometry-free attributes for desired categories
+            for feature in data.get('elements', []):
+                tags = feature.get('tags', {})
+                osm_id = feature.get('id')
+                category = tags.get('highway')
+                surface = tags.get('surface')
+
+                # Check if the category is in the desired list
+                if category in desired_categories:
+                    # Update or insert the data into the table
+                    cursor.execute(
+                        "INSERT INTO public.tb_highway_surface (osm_id, surface) "
+                        "VALUES (%s, %s) "
+                        "ON CONFLICT (osm_id) DO UPDATE SET "
+                        "surface = EXCLUDED.surface;",
+                        (osm_id, surface)
+                    )
+        except requests.exceptions.RequestException as e:
+            print(f"Error in request for cell {cell_id}: {e}")
+
+    print("Committing and closing the connection...")
+    # Commit and close the connection to the database
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    print("Data extraction completed.")
+
+# Define the necessary information
+overpass_api_url = 'https://overpass.kumi.systems/api/interpreter'
+grid_table_name = 'bases_auxiliares.tb_grid_mt'
+postgis_connection_string = "dbname='postgres' user='postgres' host='localhost' password='XXXXX' port='5432'"
+
+# Call the function to extract geometry-free attributes
+extract_attributes_within_grid(overpass_api_url, grid_table_name, postgis_connection_string)
