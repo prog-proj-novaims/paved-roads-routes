@@ -24,9 +24,10 @@ def extract_attributes_within_grid(api_url, grid_table, connection_string):
     # Create the table if it doesn't exist
     print("Checking and creating the table...")
     cursor.execute(f'''
-        CREATE TABLE IF NOT EXISTS public.tb_highway_surface(
+        CREATE TABLE IF NOT EXISTS public.tb_highway_surface (
             id SERIAL PRIMARY KEY,
             osm_id BIGINT,
+            fclass VARCHAR,
             surface VARCHAR
         );
     ''')
@@ -73,11 +74,11 @@ def extract_attributes_within_grid(api_url, grid_table, connection_string):
                 if category in desired_categories:
                     # Update or insert the data into the table
                     cursor.execute(
-                        "INSERT INTO public.tb_highway_surface (osm_id, surface) "
-                        "VALUES (%s, %s) "
+                        "INSERT INTO public.tb_highway_surface (osm_id, fclass, surface) "
+                        "VALUES (%s, %s, %s) "
                         "ON CONFLICT (osm_id) DO UPDATE SET "
-                        "surface = EXCLUDED.surface;",
-                        (osm_id, surface)
+                        "fclass = EXCLUDED.fclass, surface = EXCLUDED.surface;",
+                        (osm_id, category, surface)
                     )
         except requests.exceptions.RequestException as e:
             print(f"Error in request for cell {cell_id}: {e}")
