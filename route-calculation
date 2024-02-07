@@ -12,11 +12,13 @@ DO $$
 DECLARE
     r_id integer;
 BEGIN
-    FOR r_id IN SELECT id FROM public.mv_pa_500_paved_roads_final LOOP
-        WITH PontoMaisProximo AS (
+    FOR r_id IN SELECT id FROM 
+public.mv_pa_500_paved_roads_final -- table with rural parcels
+LOOP
+        WITH ClosestNode AS (
             SELECT
                 p.id AS poligono_id,
-                (ST_ClosestPoint(v.the_geom, ST_Centroid(st_transform(p.geom, 4326)))) as ponto_proximo
+                (ST_ClosestPoint(v.the_geom, ST_Centroid(st_transform(p.geom, 4326)))) as nearest_node
             FROM
                 public.mv_pa_500_paved_roads_final p,
                 LATERAL (
@@ -27,8 +29,9 @@ BEGIN
                             a.surface,
                             a.fclass
                         FROM
-                            novaims.roads_surface_es a
-                            JOIN novaims.roads_surface_es_noded c ON c.old_id = a.id
+                            novaims.roads_surface_es a --roads lines
+                            JOIN novaims.roads_surface_es_noded --roads surface
+                            c ON c.old_id = a.id
                     ) a
                     WHERE
                         "surface" IN ('asphalt','paved','pavimentado','concrete') AND
@@ -39,7 +42,8 @@ BEGIN
             WHERE
                 p.id = r_id
         ),
-        centroid_assent AS (
+        centroid_assent -- farm parcels centroids
+                AS (
             SELECT
                 p.id AS poligono_id,
                 ST_Centroid(st_transform(p.geom, 4326)) as assent_centroid
@@ -54,7 +58,10 @@ BEGIN
                 (
                     pgr_bddijkstra(
                         'SELECT id, source, target, ST_Length(st_transform(the_geom, 5880)) as cost FROM novaims.roads_surface_es_noded',
-                        (SELECT id FROM novaims.roads_surface_es_noded_vertices_pgr v, centroid_assent cass ORDER BY v.the_geom <-> cass.assent_centroid LIMIT 1),
+                        (SELECT id FROM 
+                                        novaims.roads_surface_es_noded_vertices_pgr v, --road nodes
+                                        centroid_assent cass
+                                ORDER BY v.the_geom <-> cass.assent_centroid LIMIT 1),
                         (SELECT id FROM
                             (
                                 SELECT
@@ -69,10 +76,10 @@ BEGIN
                             WHERE x."surface" IN ('asphalt','paved','pavimentado','concrete') AND
                                   "fclass" IN ('primary','secondary','trunk')
                             ORDER BY the_geom <-> pmp.ponto_proximo LIMIT 1
-                        ),
-                        FALSE
-                    )
-                ).*
+                         ),
+                        FALSE --directional parameter
+                        )
+                                    ).*
             FROM
                 PontoMaisProximo pmp
         )
