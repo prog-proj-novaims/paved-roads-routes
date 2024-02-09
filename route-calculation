@@ -1,7 +1,7 @@
 ## ROUTE CALCULATION FROM SETTLEMENTS TO THE NEAREST PAVED NODE V1
 
 -- First, ensure that the destination table exists
-CREATE TABLE IF NOT EXISTS public.resultados_rotas_final (
+CREATE TABLE IF NOT EXISTS public.results_routes_final (
     poligono_id integer,
     route_km numeric,
     route_geom geometry
@@ -13,14 +13,14 @@ DECLARE
     r_id integer;
 BEGIN
     FOR r_id IN SELECT id FROM 
-public.mv_pa_500_paved_roads_final -- table with rural parcels
+novaims.tb_rural_parcels -- table with rural parcels
 LOOP
         WITH ClosestNode AS (
             SELECT
                 p.id AS poligono_id,
                 (ST_ClosestPoint(v.the_geom, ST_Centroid(st_transform(p.geom, 4326)))) as nearest_node
             FROM
-                public.mv_pa_500_paved_roads_final p,
+                novaims.tb_rural_parcels p,
                 LATERAL (
                     SELECT the_geom
                     FROM (
@@ -29,9 +29,9 @@ LOOP
                             a.surface,
                             a.fclass
                         FROM
-                            novaims.roads_surface_es a --roads lines
-                            JOIN novaims.roads_surface_es_noded --roads surface
-                            c ON c.old_id = a.id
+                            novaims.ways a --roads lines
+                            JOIN novaims.tb_highway_surface --roads surface
+                            c ON c.osm_id = a.osm_id
                     ) a
                     WHERE
                         "surface" IN ('asphalt','paved','pavimentado','concrete') AND
@@ -48,7 +48,7 @@ LOOP
                 p.id AS poligono_id,
                 ST_Centroid(st_transform(p.geom, 4326)) as assent_centroid
             FROM
-                public.mv_pa_500_paved_roads_final p
+                novaims.tb_rural_parcels p
             WHERE
                 p.id = r_id
         ),
@@ -57,7 +57,7 @@ LOOP
                 pmp.poligono_id,
                 (
                     pgr_bddijkstra(
-                        'SELECT id, source, target, ST_Length(st_transform(the_geom, 5880)) as cost FROM novaims.roads_surface_es_noded',
+                        'SELECT id, source, target, ST_Length(st_transform(the_geom, 5880)) as cost FROM novaims.ways',
                         (SELECT id FROM 
                                         novaims.roads_surface_es_noded_vertices_pgr v, --road nodes
                                         centroid_assent cass
@@ -70,7 +70,7 @@ LOOP
                                     a.fclass
                                 FROM
                                     novaims.roads_surface_es a
-                                    JOIN novaims.roads_surface_es_noded c ON c.old_id = a.id
+                                    JOIN novaims.ways c ON c.old_id = a.id
                                     JOIN novaims.roads_surface_es_noded_vertices_pgr b ON c.target = b.id
                             ) x
                             WHERE x."surface" IN ('asphalt','paved','pavimentado','concrete') AND
@@ -83,7 +83,7 @@ LOOP
             FROM
                 PontoMaisProximo pmp
         )
-        INSERT INTO public.resultados_rotas_final(poligono_id, route_km, route_geom)
+        INSERT INTO public.results_routes_final(poligono_id, route_km, route_geom)
         SELECT
             route.poligono_id,
             sum(st_length(road.the_geom::geography))/1000 AS route_km,
