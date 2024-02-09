@@ -10,6 +10,17 @@ def load_config():
         config = yaml.safe_load(config_file)
     return config
 
+ # Create the table if it doesn't exist
+    print("Checking and creating the table...")
+    cursor.execute(f'''
+        CREATE TABLE IF NOT EXISTS novaims.tb_highway_surface (
+            id SERIAL PRIMARY KEY,
+            osm_id BIGINT,
+            fclass VARCHAR,
+            surface VARCHAR
+        );
+    ''')
+
 def get_latest_osm_id(cursor):
     cursor.execute("SELECT MAX(osm_id) FROM novaims.tb_highway_surface;")
     result = cursor.fetchone()
@@ -29,7 +40,7 @@ def extract_attributes_within_grid(api_url, grid_table, db_params, desired_categ
     latest_osm_id = get_latest_osm_id(cursor)
 
     # Query the grid and iterate over each cell
-    cursor.execute(f'SELECT id, "left", top, "right", bottom FROM {grid_table};')
+    cursor.execute(f'SELECT id, "left", top, "right", bottom FROM {grid_table} where id = 70;')
     for row in cursor.fetchall():
         cell_id, left, top, right, bottom = row
 
