@@ -40,7 +40,7 @@ def extract_attributes_within_grid(api_url, grid_table, db_params, desired_categ
     latest_osm_id = get_latest_osm_id(cursor)
 
     # Query the grid and iterate over each cell
-    cursor.execute(f'SELECT id, "left", top, "right", bottom FROM {grid_table};')
+    cursor.execute(f'SELECT id, "left", top, "right", bottom FROM {grid_table} where id = 70;')
     for row in cursor.fetchall():
         cell_id, left, top, right, bottom = row
 
