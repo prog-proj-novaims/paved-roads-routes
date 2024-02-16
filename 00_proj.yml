@@ -8,7 +8,7 @@ db_params:
   host: "localhost"
   port: "5432"
   password: "XXXXX"
-grid_table_name: "bases_auxiliares.tb_grid_mt" #replace for the grid that will be used for geting the surface info for the area of interest
+grid_table_name: "novaims.tb_boundary_grid" #replace for the grid that will be used for geting the surface info for the area of interest
 overpass_api_url: "https://overpass.kumi.systems/api/interpreter"
 desired_categories:
   - "motorway"
