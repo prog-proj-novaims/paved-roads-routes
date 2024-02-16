@@ -1,4 +1,4 @@
-osm_pbf_url: "https://download.geofabrik.de/south-america/brazil/centro-oeste-latest.osm.pbf" #change it for the place of interest
+osm_pbf_url: "http://download.geofabrik.de/europe/germany/baden-wuerttemberg/tuebingen-regbez-latest.osm.pbf" #change it for the place of interest
 bounding_box: "-61.63,-18.04,-50.20,-7.34" #change the bounding box for the area of interest
 osmconvert_output: "temporary_data_bb.osm"
 osm2pgrouting_config: "config_files/mapconfig_for_cars.xml"
