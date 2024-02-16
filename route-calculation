@@ -11,7 +11,7 @@ BEGIN
             v.source,
             (ST_ClosestPoint(v.the_geom, ST_Centroid(st_transform(p.geom, 4326)))) as nearest_node
         FROM
-            novaims.tb_rural_parcels p,
+            novaims.tb_origin_polygons p,
             LATERAL (
                 SELECT 
                     a.source,
@@ -42,7 +42,7 @@ BEGIN
             p.fid AS polygon_id,
             ST_Centroid(st_transform(p.geom, 4326)) as parcel_centroid
         FROM
-            novaims.tb_rural_parcels p
+            novaims.tb_origin_polygons p
         WHERE
             p.fid = id_param
     ),
@@ -79,7 +79,7 @@ BEGIN
         JOIN novaims.ways AS road ON route.edge = road.gid
     GROUP BY
         route.polygon_id;             
-        IF (select fid from novaims.tb_rural_parcels where fid = id_param) is null THEN
+        IF (select fid from novaims.tb_origin_polygons where fid = id_param) is null THEN
         RETURN 'Error: ID not found.';
     ELSE
         RETURN 'Route calculated successfully.';
