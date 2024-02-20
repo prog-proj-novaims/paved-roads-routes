@@ -47,10 +47,10 @@ if __name__ == "__main__":
     # Load configuration
     config = load_config()
 
-    #download_osm_pbf(config["osm_pbf_url"])
+    download_osm_pbf(config["osm_pbf_url"])
     # Run osmconvert and osm2pgrouting
-    # run_osmconvert(config["bounding_box"], config["osmconvert_output"])
+    run_osmconvert(config["bounding_box"], config["osmconvert_output"])
     run_osm2pgrouting(config["osmconvert_output"], config["osm2pgrouting_config"], config["db_params"])
-    #clean_up()
+    clean_up()
 
     print("ETL process completed.")
