@@ -6,7 +6,7 @@ import json
 import yaml
 
 def load_config():
-    with open("config/00_proj.yml", "r") as config_file:
+    with open("config_files/00_proj.yml", "r") as config_file:
         config = yaml.safe_load(config_file)
     return config
 
@@ -15,7 +15,7 @@ def load_config():
     cursor.execute(f'''
         CREATE TABLE IF NOT EXISTS novaims.tb_highway_surface (
             id SERIAL PRIMARY KEY,
-            osm_id BIGINT,
+            osm_id BIGINT UNIQUE NOT NULL,
             fclass VARCHAR,
             surface VARCHAR
         );
@@ -40,7 +40,7 @@ def extract_attributes_within_grid(api_url, grid_table, db_params, desired_categ
     latest_osm_id = get_latest_osm_id(cursor)
 
     # Query the grid and iterate over each cell
-    cursor.execute(f'SELECT id, "left", top, "right", bottom FROM {grid_table} where id = 70;')
+    cursor.execute(f'SELECT id, "left", top, "right", bottom FROM {grid_table};')
     for row in cursor.fetchall():
         cell_id, left, top, right, bottom = row
 
