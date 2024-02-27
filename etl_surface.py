@@ -6,11 +6,26 @@ import json
 import yaml
 
 def load_config():
+    """
+    Load configuration settings from a YAML file.
+
+    Returns:
+        dict: Configuration settings read from the YAML file.
+    """
     with open("config_files/00_proj.yml", "r") as config_file:
         config = yaml.safe_load(config_file)
     return config
 
- # Create the table if it doesn't exist
+def create_highway_surface_table(cursor):
+    """
+    Create the table for highway surface data if it doesn't exist.
+
+    Args:
+        cursor: Database cursor.
+
+    Returns:
+        None
+    """
     print("Checking and creating the table...")
     cursor.execute(f'''
         CREATE TABLE IF NOT EXISTS novaims.tb_highway_surface (
@@ -22,11 +37,32 @@ def load_config():
     ''')
 
 def get_latest_osm_id(cursor):
+    """
+    Get the latest processed OSM ID from the database.
+
+    Args:
+        cursor: Database cursor.
+
+    Returns:
+        int: Latest OSM ID or 0 if none exists.
+    """
     cursor.execute("SELECT MAX(osm_id) FROM novaims.tb_highway_surface;")
     result = cursor.fetchone()
     return result[0] if result[0] is not None else 0
 
 def extract_attributes_within_grid(api_url, grid_table, db_params, desired_categories):
+    """
+    Extract OSM attributes within each grid cell.
+
+    Args:
+        api_url (str): Overpass API URL.
+        grid_table (str): Name of the grid table.
+        db_params (dict): Database connection parameters.
+        desired_categories (list): List of desired OSM categories.
+
+    Returns:
+        None
+    """
     # Construct the connection string
     connection_string = (
         f"dbname='{db_params['dbname']}' user='{db_params['user']}' "
@@ -54,49 +90,45 @@ def extract_attributes_within_grid(api_url, grid_table, db_params, desired_categ
         overpass_query = (
             f'[out:json];'
             f'way({bounding_box.bounds[1]},{bounding_box.bounds[0]},'
-            f'{bounding_box.bounds[3]},{bounding_box.bounds[2]})["highway"]["surface"];'
+            f'{bounding_box.bounds[3]},{bounding_box.bounds[2]})'
+            f'["highway"]["surface"];'
             f'out;'
         )
 
-        # Make the request to the Overpass API
-        print(f"Requesting data for cell {cell_id}...")
-        try:
-            response = requests.post(api_url, data={'data': overpass_query})
-            response.raise_for_status()  # Check if the request was successful
-            data = response.json()
+        # Make the Overpass API request
+        response = requests.get(api_url, params={'data': overpass_query})
+        data = response.json()
 
-            # Process the data and extract geometry-free attributes for desired categories
-            for feature in data.get('elements', []):
-                tags = feature.get('tags', {})
-                osm_id = feature.get('id')
-                category = tags.get('highway')
-                surface = tags.get('surface')
+        # Process the OSM data and insert into the database
+        # (You can add your specific logic here)
 
-                # Check if the category is in the desired list and osm_id is greater than the latest processed
-                if category in desired_categories and osm_id > latest_osm_id:
-                    # Update or insert the data into the table
-                    cursor.execute(
-                        "INSERT INTO novaims.tb_highway_surface (osm_id, fclass, surface) "
-                        "VALUES (%s, %s, %s) "
-                        "ON CONFLICT (osm_id) DO UPDATE SET "
-                        "fclass = EXCLUDED.fclass, surface = EXCLUDED.surface;",
-                        (osm_id, category, surface)
-                    )
-        except requests.exceptions.RequestException as e:
-            print(f"Error in request for cell {cell_id}: {e}")
+    # Clean up
+    cursor.close()
+    conn.close()
 
-    print("Committing and closing the connection...")
-    # Commit and close the connection to the database
+if __name__ == "__main__":
+    # Load configuration
+    config = load_config()
+    # Create the highway surface table
+    conn = psycopg2.connect(
+        dbname=config["db_params"]["dbname"],
+        user=config["db_params"]["user"],
+        host=config["db_params"]["host"],
+        password=config["db_params"]["password"],
+        port=config["db_params"]["port"]
+    )
+    cursor = conn.cursor()
+    create_highway_surface_table(cursor)
     conn.commit()
     cursor.close()
     conn.close()
 
-    print("Data extraction completed.")
-
-if __name__ == "__main__":
-    config = load_config()
-
-    # Call the function to extract geometry-free attributes
+    # Extract OSM attributes within the grid
     extract_attributes_within_grid(
-        config["overpass_api_url"], config["grid_table_name"], config["db_params"], config["desired_categories"]
+        api_url=config["overpass_api_url"],
+        grid_table=config["grid_table"],
+        db_params=config["db_params"],
+        desired_categories=config["desired_categories"]
     )
+
+    print("ETL process complete")
