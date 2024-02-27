@@ -1,11 +1,14 @@
--- DROP FUNCTION novaims.route_calc_proj(int4);
+def route_calc_proj(id_param):
+    """
+    Calculate the route projection for a given polygon ID.
 
-CREATE OR REPLACE FUNCTION novaims.route_calc_proj(id_param integer)
- RETURNS text
- LANGUAGE plpgsql
-AS $function$
-BEGIN
-    WITH ClosestNode AS (
+    Args:
+        id_param (int): Polygon ID.
+
+    Returns:
+        str: Text representation of the calculated route projection.
+    """
+    with ClosestNode AS (
         SELECT
             p.fid AS polygon_id,
             v.source,
@@ -54,35 +57,20 @@ BEGIN
                     'SELECT gid as id, source, target, length_m/1000 as cost FROM novaims.ways',
                     (SELECT id FROM 
                                     novaims.ways_vertices_pgr v, -- road nodes
-                                    centroid_parcel cass
-                            ORDER BY v.the_geom <-> cass.parcel_centroid LIMIT 1),
-                   pmp.source,
-                    FALSE -- directional parameter
+                    WHERE
+                        v.the_geom = ClosestNode.nearest_node
+                    ORDER BY
+                        pmp.polygon_id, cost
+                    LIMIT 1
                 )
-            ).*
+            ) AS route
         FROM
-            ClosestNode pmp
+            ClosestNode
     )
-    INSERT INTO novaims.results_routes_final(polygon_id, route_km, route_geom)
     SELECT
-        route.polygon_id,
-        sum(st_length(road.the_geom::geography))/1000 AS route_km,
-        ST_Collect(road.the_geom) AS route_geom
+        Routes.polygon_id,
+        ST_AsText(ST_MakeLine(Routes.route.geom)) as route_geometry
     FROM
-        (
-            SELECT
-                polygon_id,
-                edge
-            FROM
-                Routes
-        ) AS route
-        JOIN novaims.ways AS road ON route.edge = road.gid
-    GROUP BY
-        route.polygon_id;             
-        IF (select fid from novaims.tb_origin_polygons where fid = id_param) is null THEN
-        RETURN 'Error: ID not found.';
-    ELSE
-        RETURN 'Route calculated successfully.';
-    END IF;
-END $function$
-;
+        Routes
+    WHERE
+        Routes.polygon_id = id_param;
