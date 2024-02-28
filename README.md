@@ -89,6 +89,7 @@ The were two main challenges we faced in this project, the first is allowing use
 
 ![example](https://github.com/prog-proj-novaims/paved-roads-routes/assets/76739174/3185d992-7d76-4960-afe7-c7179693fe24)
 
+As main limitations from this application is that it only identify closest nodes considering linear distances and the centroid from the origin polygons. In the future the sql function can be improved in order to consider origin polygons limits and the shortest path itself.
 
 Future enhancements may include real-time traffic data integration, alternative route suggestions based on user preferences, and optimizing route planning algorithms for faster computation.
 
