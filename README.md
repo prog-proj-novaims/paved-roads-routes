@@ -79,6 +79,10 @@ curl -X POST -H "Content-Type: application/json" -d '{
   "description": "A square polygon in Markdorf, Germany"
 }' http://127.0.0.1:5000/add_origin_polygon
 
+# Front End:
+The frontend web application offers an intuitive user interface for interacting with the routing system. It is built using HTML, CSS, and JavaScript, which leverages the Leaflet.js library for map visualization.This allows users to make get request by inserting the id of farm locations , then it calculates distances, and visualize route information dynamically. The frontend also seamlessly communicates with the backend API to retrieve routing data and update the user interface in real-time.  
+![image](https://github.com/prog-proj-novaims/paved-roads-routes/assets/158604785/29a2ba11-9cc1-4c46-a8bc-d47eb520e612)
+![image](https://github.com/prog-proj-novaims/paved-roads-routes/assets/158604785/8157c37c-5398-4b61-8b65-f6968f25fd2b)
 
 
 
