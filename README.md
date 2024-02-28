@@ -24,7 +24,8 @@ Setup Instruction
 
 
 2.	Create Environment
- 
+ ![image](https://github.com/prog-proj-novaims/paved-roads-routes/assets/123589817/e689d50a-ad7d-4b73-afac-bd1f18382ae0)
+
 
 3.	Activate Environment
  
