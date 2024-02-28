@@ -12,10 +12,10 @@ socketio = SocketIO(app)
 
 def load_config():
     """
-    Load configuration settings from a YAML file.
+    Load configuration from a YAML file.
 
     Returns:
-        dict: Configuration settings read from the YAML file.
+        dict: Configuration parameters.
     """
     with open("config_files/00_proj.yml", "r") as config_file:
         config = yaml.safe_load(config_file)
@@ -23,15 +23,15 @@ def load_config():
 
 def execute_sql_query(sql_query, db_params, commit=False):
     """
-    Execute an SQL query using psycopg2.
+    Execute a SQL query on the database.
 
     Args:
-        sql_query (str): SQL query to execute.
+        sql_query (str): SQL query string.
         db_params (dict): Database connection parameters.
         commit (bool, optional): Whether to commit the transaction. Defaults to False.
 
     Returns:
-        list or None: Result of the query or None if an error occurs.
+        list: Result of the SQL query.
     """
     connection_string = (
         f"dbname='{db_params['dbname']}' user='{db_params['user']}' "
@@ -57,14 +57,14 @@ def execute_sql_query(sql_query, db_params, commit=False):
 
 def wait_for_result(id_param, config):
     """
-    Wait for the result of a route calculation.
+    Wait for the result of a database query.
 
     Args:
         id_param (int): Polygon ID.
-        config (dict): Configuration settings.
+        config (dict): Configuration parameters.
 
     Returns:
-        list or None: Result of the route calculation or None if not found.
+        list: Result of the database query.
     """
     max_attempts = 10
     for attempt in range(max_attempts):
@@ -90,7 +90,7 @@ def get_route_info(id_param):
         id_param (int): Polygon ID.
 
     Returns:
-        dict: Route information.
+        json: Route information.
     """
     config = load_config()
 
@@ -101,11 +101,80 @@ def get_route_info(id_param):
         response = {
             'polygon_id': route_info[0][0],
             'route_km': float(route_info[0][1]),
-            'route_geometry': json.loads(route_info[0][2])
+            'route_geom': route_info[0][2]
         }
+
+        # Get origin information
+        origin_query = f"SELECT name, description, ST_AsGeoJSON(geom) FROM novaims.tb_origin_polygons WHERE id = {id_param}"
+        origin_info = execute_sql_query(origin_query, config["db_params"])
+
+        if origin_info:
+            response['name'] = origin_info[0][0]
+            response['description'] = origin_info[0][1]
+            response['origin_geom'] = origin_info[0][2]
+
         return jsonify(response)
     else:
-        return jsonify({'message': 'Route information not found'})
+        id_check_query = f"SELECT id FROM novaims.tb_origin_polygons WHERE id = {id_param}"
+        id_check = execute_sql_query(id_check_query, config["db_params"])
+
+        if id_check:
+            route_calc_query = f"SELECT novaims.route_calc_proj({id_param})"
+            execute_sql_query(route_calc_query, config["db_params"], commit=True)
+
+            updated_route_info = wait_for_result(id_param, config)
+
+            if updated_route_info:
+                response = {
+                    'polygon_id': updated_route_info[0][0],
+                    'route_km': float(updated_route_info[0][1]),
+                    'route_geom': updated_route_info[0][2]
+                }
+
+                # Get origin information
+                origin_query = f"SELECT name, description, ST_AsGeoJSON(geom) FROM novaims.tb_origin_polygons WHERE id = {id_param}"
+                origin_info = execute_sql_query(origin_query, config["db_params"])
+
+                if origin_info:
+                    response['name'] = origin_info[0][0]
+                    response['description'] = origin_info[0][1]
+                    response['origin_geom'] = origin_info[0][2]
+
+                return jsonify(response)
+            else:
+                return jsonify({'message': 'Error fetching route info after calculation'})
+        else:
+            return jsonify({'message': 'ID not found'})
+
+@app.route('/add_origin_polygon', methods=['POST'])
+def add_origin_polygon():
+    """
+    Add a new origin polygon to the database.
+
+    Returns:
+        json: Result message.
+    """
+    config = load_config()
+
+    # Get geometry and other values from the request
+    data = request.get_json()
+    geom = data.get('geom')
+    name = data.get('name')
+    description = data.get('description')
+
+    # Insert the new record into tb_origin_polygons
+    insert_query = f"INSERT INTO novaims.tb_origin_polygons (geom, name, description) VALUES (ST_GeomFromGeoJSON('{geom}'),  '{name}', '{description}')"
+    execute_sql_query(insert_query, config["db_params"], commit=True)
+
+    # Get the ID of the newly inserted record
+    id_query = f"SELECT max(id) FROM novaims.tb_origin_polygons"
+    result = execute_sql_query(id_query, config["db_params"])
+
+    if result:
+        new_id = result[0][0]
+        return jsonify({'message': 'Polygon added successfully', 'id': new_id})
+    else:
+        return jsonify({'message': 'Error adding polygon'})
 
 if __name__ == '__main__':
-    socketio.run(app)
+    app.run(debug=True, port=5000)
