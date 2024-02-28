@@ -14,9 +14,17 @@ Data Sources:
  >OSM attributes
    https://overpass.kumi.systems/api/interpreter
 
-   
 
 
+#go to routing-proj folder
+#creating environment
+conda create -n routing_proj
+
+##Activating environment
+conda activate routing_proj
+
+##installing packages
+conda install --file requirements.txt -c conda-forge
 
 ##testing get
 http://127.0.0.1:5000/get_route_info/10
