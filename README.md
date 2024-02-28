@@ -19,42 +19,54 @@ The project relies on two main data sources: OSM geometry and OSM attributes. Th
 Setup Instruction
 1.	Navigate to the folder where the project is saved in your terminal. In this project, the folder is 'routing-proj'. And change directory.
 
- 
+ ![image](https://github.com/prog-proj-novaims/paved-roads-routes/assets/123589817/3c91a9ba-f492-45d2-83d2-5e6fe5bbcd6d)
+
 
 
 
 2.	Create Environment
- ![image](https://github.com/prog-proj-novaims/paved-roads-routes/assets/123589817/e689d50a-ad7d-4b73-afac-bd1f18382ae0)
+
+![image](https://github.com/prog-proj-novaims/paved-roads-routes/assets/123589817/3ef4c6de-bd7b-48d6-b46a-78b208495127)
 
 
 3.	Activate Environment
- 
+![image](https://github.com/prog-proj-novaims/paved-roads-routes/assets/123589817/c289ae7e-5707-408f-955c-20b0bdcb2bd1)
+
+
 
 4.	Install Required Packages from ‘requirements.txt’ file
- 
+![image](https://github.com/prog-proj-novaims/paved-roads-routes/assets/123589817/16dbdc13-67dd-49d9-8c4f-29f735d57c79)
+
+
 
 Database Setup
 1.	Create database and schema. Load “create_tables.sql” from db folder into Postgres.
 2.	Execute the following SQL commands to create necessary tables in your PostgreSQL database: 
 •	Create table 'results_routes_final', where the result of calculated rout is saved. And create the create a table called 'tb_origin_polygons' from where the shortest path is calculated to nearest main road.
 •	CREATE INDEX sidx_tb_origin_polygons_geom ON novaims.tb_origin_polygons USING gist (geom);
- 
+ ![image](https://github.com/prog-proj-novaims/paved-roads-routes/assets/123589817/3dc459a1-95fd-4b9f-990b-1590ca6b001e)
+
 Running ETL
 First run etl_geom and then etl_surface. If the etl is ran successfully, you receive the message "ETL process complete", otherwise you receive error.
+![image](https://github.com/prog-proj-novaims/paved-roads-routes/assets/123589817/1bf599bc-aa38-4636-843f-9b76e0676fd2)
 
 Creating routing function
 Load the “route-calculation” into Postgres and run the function.
 If running the function is successful, the success message appears and the function will be created in the database.
+![image](https://github.com/prog-proj-novaims/paved-roads-routes/assets/123589817/674c42dc-ad0f-4d23-b62e-fd3d9a51363a)
+
 
 
 Running API
 Run the Flask-based backend API to generate HTTP requests in the form of GET and POST related to route calculations.
  
+![image](https://github.com/prog-proj-novaims/paved-roads-routes/assets/123589817/a98ffa31-b36f-43a6-8c42-0ecf5b4d815f)
 
 Testing the API
 Testing GET request by inserting a specific id to check if the api is working properly. 
-
- “http://127.0.0.1:5000/get_route_info/10”
+# put this link in the browser
+ http://127.0.0.1:5000/get_route_info/10
+ # the response shuold looks like this
 Response; { "description": null, "name": "Random parcels", "origin_geom": "{"type":"MultiPolygon","coordinates":[[[[9.207400227,47.782015419],[9.207351284,47.781706402],[9.207209244,47.781427634],[9.206988012,47.781206402],[9.206709244,47.781064362],[9.206400227,47.781015419],[9.20609121,47.781064362],[9.205812442,47.781206402],[9.20559121,47.781427634],[9.205449171,47.781706402],[9.205400227,47.782015419],[9.205449171,47.782324436],[9.20559121,47.782603204],[9.205812442,47.782824436],[9.20609121,47.782966475],[9.206400227,47.783015419],[9.206709244,47.782966475],[9.206988012,47.782824436],[9.207209244,47.782603204],[9.207351284,47.782324436],[9.207400227,47.782015419]]]]}", "polygon_id": 10, "route_geom": "{"type":"MultiLineString","coordinates":[[[9.6095221,47.7123394],[9.6090984,47.7124757],[9.6090581,47.7124611]],[[9.6093245,47.7111408],[9.609277,47.7114257],[9.6092949,47.7116979],[9.6095221,47.7123394]]]}", "route_km": 0.17415832 }
 
 Testing POST request by inserting a specific id to make the api is working properly. 
@@ -69,5 +81,5 @@ Future enhancements to the project may include integrating real-time traffic dat
 Conclusion:
 In conclusion, the "Paved Roads Routes" project addresses the critical need for efficient route planning in agricultural contexts. By harnessing the power of OSM data, database management, ETL processes, and web technologies, the project provides a valuable tool for farmers to optimize transportation logistics and enhance productivity. With continued development and enhancements, the project holds significant potential to contribute to agricultural infrastructure planning and management, ultimately benefiting farming communities worldwide.
 Authors:
-Enayatullah Meskinyaar 
+Enayatullah Meskinyaar is currently a master of  
 
