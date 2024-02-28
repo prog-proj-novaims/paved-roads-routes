@@ -84,4 +84,13 @@ Improvements in UI design and deployment on scalable cloud platforms can enhance
 
 ## Conclusion
 In conclusion, the "Paved Roads Routes" project addresses the critical need for efficient route planning in agricultural contexts. By harnessing the power of OSM data, database management, ETL processes, and web technologies, the project provides a valuable tool for farmers to optimize transportation logistics and enhance productivity. With continued development and enhancements, the project holds significant potential to contribute to agricultural infrastructure planning and management, ultimately benefiting farming communities worldwide.
+If the surface and road classes from the route calculator function are changed it is possible to adress different objectives. 
+
+´´´
+WHERE
+                    "surface" IN ('asphalt','paved','pavimentado','concrete') AND
+                    "fclass" IN ('motorway','motorway_junction','motorway_link','primary',
+                    			'primary_link','road','secondary','secondary_link',
+                    			'tertiary','tertiary_link','trunk','trunk_link')
+                       ´´´
 
