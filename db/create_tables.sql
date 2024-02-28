@@ -1,15 +1,3 @@
-##go to routing-proj folder
-
-##creating environment
-conda create -n routing_proj
-
-##Activating environment
-conda activate routing_proj
-
-##installing packages
-conda install --file requirements.txt -c conda-forge
-
-##create tables and function
 
 CREATE TABLE novaims.results_routes_final (
 	polygon_id int4 NULL,
