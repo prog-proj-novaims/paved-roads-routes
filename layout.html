@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Distance Calculator</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin="">  
+
+  <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin=""></script>  
+
+  <style>
+    #map {
+      width: 100%;
+      height: 900px;
+    }
+    .info {
+      padding: 6px 8px;
+      font: 14px/16px Arial, Helvetica, sans-serif;
+      background: #bfe5ff;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+    }
+    .info h4 {
+      margin: 0 0 5px;
+      color: #777;
+    }
+    .legend {
+      text-align: left;
+      line-height: 18px;
+      color: #555;
+    }
+    .legend i {
+      width: 18px;
+      height: 18px;
+      float: left;
+      margin-right: 8px;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map"></div>
+  <div style="position: absolute; z-index: 1000; top: 10px; left: 10px; background: floralwhite  ; padding: 10px; border-radius: 5px;">
+    <h4>Distance Calculator</h4>
+    <form id="distanceForm">
+      <label for="point1">Point 1:</label>
+      <input type="text" id="point1" placeholder="Enter id" required>
+      <br>
+      <button type="button" onclick="calculateDistance()">Calculate Distance</button>
+      <p id="result"></p>
+    </form>
+    <br>
+    <label for="toggleMap">World Imagery:</label>
+    <input type="checkbox" id="toggleMap" onclick="toggleMapBackground()">
+  </div>
+
+  <script type="text/javascript">
+    var map = L.map("map").setView([33.7, 73.2], 3);
+    var baseLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    function calculateDistance() {
+      var point1 = document.getElementById('point1').value;
+
+      // Fetch the route information from the server
+      fetch(`http://127.0.0.1:5000/get_route_info/${point1}`)
+        .then(response => response.json())
+        .then(data => {
+          // Use the returned data to update the route information
+          var routeGeom = JSON.parse(data.route_geom);
+          var origGeom = JSON.parse(data.origin_geom);
+
+          // Create a GeoJSON layer and add it to the map
+          var geojsonLayer = L.geoJSON(routeGeom).addTo(map);
+          var geojsonLayer2 = L.geoJSON(origGeom, {
+            style: {
+              color: 'red'
+            }
+          }).addTo(map);
+
+          // Zoom to the extent of the GeoJSON layer
+          map.fitBounds(geojsonLayer.getBounds());
+
+          // Display all the information retrieved by the API
+          var resultElement = document.getElementById('result');
+          resultElement.innerHTML = `Description: ${data.description}<br>
+                                     Name: ${data.name}<br>
+                                     Polygon ID: ${data.polygon_id}<br>
+                                     Route Distance: ${data.route_km} km`;
+
+          // Fill the var data in the same format
+          var dataInSameFormat = {
+            description: data.description,
+            name: data.name,
+            origin_geom: data.origin_geom,
+            polygon_id: data.polygon_id,
+            route_geom: data.route_geom,
+            route_km: data.route_km
+          };
+
+          // Now you can use the dataInSameFormat as needed
+          console.log(dataInSameFormat);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
+    function toggleMapBackground() {
+      // Toggle the map background layer
+      if (map.hasLayer(baseLayer)) {
+        map.removeLayer(baseLayer);
+        var satelite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19
+        }).addTo(map);
+      } else {
+        baseLayer.addTo(map);
+      }
+    }
+  </script>
+</body>
+</html>
