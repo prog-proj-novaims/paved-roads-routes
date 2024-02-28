@@ -1,0 +1,16 @@
+requests
+geopandas
+PyYAML
+pyarrow
+SQLAlchemy
+psycopg2-binary
+flask
+Flask-SQLAlchemy
+fastAPI 
+pydantic 
+typing
+random
+psycopg2.extras
+time  
+json
+api 
