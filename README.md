@@ -60,7 +60,7 @@ Run the Flask-based backend API to generate HTTP requests in the form of GET and
 
 # Testing the API
 
- Testing a GET request by inserting a specific id to check if the API is working properly.
+Testing a GET request by inserting a specific id to check if the API is working properly.
  Put this link in the browser: http://127.0.0.1:5000/get_route_info/10
  The response should look like this:
  
