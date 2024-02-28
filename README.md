@@ -1,5 +1,5 @@
 
-# Project title: #Paved-roads-routes-main
+# Project title: Paved-roads-routes-main
 Introduction 
 Routing plays a crucial role in various domains such as transportation, logistics, urban planning, and emergency response systems. The process of finding the shortest path from one location to another has significant importance in optimizing resource utilization, minimizing travel time, and enhancing overall efficiency. In agricultural contexts, routing is essential for tasks like transporting goods, machinery, and personnel between farms and marketplaces, warehouses, or processing facilities.
 The importance of routing in agriculture stems from the need to streamline operations and maximize productivity while minimizing costs and resource wastage. Efficient routing can lead to significant benefits such as reduced fuel consumption, decreased vehicle wear and tear, and improved delivery timelines. For farmers, accessing paved roads efficiently is crucial for transporting crops to market or accessing essential services like veterinary care and equipment maintenance.
@@ -70,7 +70,14 @@ put this link in the browser
  the response shuold looks like this
 Response; { "description": null, "name": "Random parcels", "origin_geom": "{"type":"MultiPolygon","coordinates":[[[[9.207400227,47.782015419],[9.207351284,47.781706402],[9.207209244,47.781427634],[9.206988012,47.781206402],[9.206709244,47.781064362],[9.206400227,47.781015419],[9.20609121,47.781064362],[9.205812442,47.781206402],[9.20559121,47.781427634],[9.205449171,47.781706402],[9.205400227,47.782015419],[9.205449171,47.782324436],[9.20559121,47.782603204],[9.205812442,47.782824436],[9.20609121,47.782966475],[9.206400227,47.783015419],[9.206709244,47.782966475],[9.206988012,47.782824436],[9.207209244,47.782603204],[9.207351284,47.782324436],[9.207400227,47.782015419]]]]}", "polygon_id": 10, "route_geom": "{"type":"MultiLineString","coordinates":[[[9.6095221,47.7123394],[9.6090984,47.7124757],[9.6090581,47.7124611]],[[9.6093245,47.7111408],[9.609277,47.7114257],[9.6092949,47.7116979],[9.6095221,47.7123394]]]}", "route_km": 0.17415832 }
 
-Testing POST request by inserting a specific id to make the api is working properly. 
+ 
+ Testing POST request with curl (linux terminal)
+
+curl -X POST -H "Content-Type: application/json" -d '{
+  "geom": "{\"type\":\"Polygon\",\"coordinates\":[[[9.405691, 47.694781],[9.405691, 47.695781],[9.406691, 47.695781],[9.406691, 47.694781],[9.405691, 47.694781]]]}",
+  "name": "Square in Markdorf",
+  "description": "A square polygon in Markdorf, Germany"
+}' http://127.0.0.1:5000/add_origin_polygon
 
 
 
