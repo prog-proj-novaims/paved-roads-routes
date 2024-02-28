@@ -5,7 +5,7 @@ The "Paved Road Finder" is a Python-based application designed to efficiently lo
 
 
 # Objective
-The primary objective of the " paved-roads-routes-main" project is to facilitate efficient transportation logistics for farmers by generating optimized routes from farm locations to the nearest main roads. By leveraging data from the OpenStreetMap (OSM) database, the project aims to provide farmers with accurate and reliable routing information, ultimately enhancing productivity and reducing transportation costs in Bavaria region, Germany.
+The primary objective of the " paved-roads-routes-main" project is to facilitate efficient transportation logistics by generating optimized routes to the nearest main roads. By leveraging data from the OpenStreetMap (OSM) database, the project aims to provide accurate and reliable routing information, ultimately enhancing productivity and reducing transportation costs in Bavaria region, Germany.
 
 
 # Data Methodology
