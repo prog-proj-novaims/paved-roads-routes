@@ -60,7 +60,8 @@ response = {
 ```
 Test a POST request using curl (Linux terminal) or equivalent Python code to add a new origin polygon.
 
-```curl -X POST -H "Content-Type: application/json" -d '{
+```
+curl -X POST -H "Content-Type: application/json" -d '{
   "geom": "{\"type\":\"Polygon\",\"coordinates\":[[[9.405691, 47.694781],[9.405691, 47.695781],[9.406691, 47.695781],[9.406691, 47.694781],[9.405691, 47.694781]]]}",
   "name": "Square in Markdorf",
   "description": "A square polygon in Markdorf, Germany"
