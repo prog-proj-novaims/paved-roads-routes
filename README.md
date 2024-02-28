@@ -1,12 +1,7 @@
 
 # Project title: Paved-roads-routes-main
-Introduction 
-Routing plays a crucial role in various domains such as transportation, logistics, urban planning, and emergency response systems. The process of finding the shortest path from one location to another has significant importance in optimizing resource utilization, minimizing travel time, and enhancing overall efficiency. In agricultural contexts, routing is essential for tasks like transporting goods, machinery, and personnel between farms and marketplaces, warehouses, or processing facilities.
-The importance of routing in agriculture stems from the need to streamline operations and maximize productivity while minimizing costs and resource wastage. Efficient routing can lead to significant benefits such as reduced fuel consumption, decreased vehicle wear and tear, and improved delivery timelines. For farmers, accessing paved roads efficiently is crucial for transporting crops to market or accessing essential services like veterinary care and equipment maintenance.
-In the context of this project, the process involves leveraging geographic information system (GIS) tools to create a grid over the area of interest, such as farmland or agricultural regions. This grid serves as a reference for identifying farm locations and generating routes to the closest main roads. Utilizing OpenStreetMap (OSM) data provides access to a comprehensive road network, allowing for accurate routing calculations.
-The implementation involves querying the OSM database through an API to retrieve road network data, including road types and geometries. By integrating farm location data with the road network data, it becomes possible to calculate the shortest path from each farm to the nearest main road. This information can then be utilized to optimize transportation routes, improve accessibility, and enhance overall efficiency in agricultural operations.
-Furthermore, the flexibility of this approach allows for adaptation to various geographical regions and agricultural settings. Whether in developed or developing countries, the availability of OSM data and GIS tools enables farmers and agricultural stakeholders to implement routing solutions tailored to their specific needs and challenges. Overall, routing plays a vital role in modern agriculture by facilitating efficient movement and transportation, ultimately contributing to increased productivity and sustainability in the sector.
-
+# Introduction 
+The "Paved Road Finder" is a Python-based application designed to efficiently locate the shortest path to the nearest paved road from a given parcel ID. It addresses the critical need for accurate road surface information, crucial for various scenarios such as emergency response planning and outdoor recreation. Leveraging road network data from sources like OpenStreetMap (OSM) and Overpass Turbo, the application collects details on road geometry and attributes, including whether roads are paved or unpaved. Through a user-friendly interface, users input the Parcel ID, and the application dynamically calculates the optimal route to the nearest paved road based on the collected data. The identified path is then visualized on an interactive map interface, providing users with a clear understanding of the route
 
 
 # Objective
@@ -64,20 +59,85 @@ Run the Flask-based backend API to generate HTTP requests in the form of GET and
 ![image](https://github.com/prog-proj-novaims/paved-roads-routes/assets/123589817/a98ffa31-b36f-43a6-8c42-0ecf5b4d815f)
 
 # Testing the API
-Testing GET request by inserting a specific id to check if the api is working properly. 
-put this link in the browser
- http://127.0.0.1:5000/get_route_info/10
- the response shuold looks like this
-Response; { "description": null, "name": "Random parcels", "origin_geom": "{"type":"MultiPolygon","coordinates":[[[[9.207400227,47.782015419],[9.207351284,47.781706402],[9.207209244,47.781427634],[9.206988012,47.781206402],[9.206709244,47.781064362],[9.206400227,47.781015419],[9.20609121,47.781064362],[9.205812442,47.781206402],[9.20559121,47.781427634],[9.205449171,47.781706402],[9.205400227,47.782015419],[9.205449171,47.782324436],[9.20559121,47.782603204],[9.205812442,47.782824436],[9.20609121,47.782966475],[9.206400227,47.783015419],[9.206709244,47.782966475],[9.206988012,47.782824436],[9.207209244,47.782603204],[9.207351284,47.782324436],[9.207400227,47.782015419]]]]}", "polygon_id": 10, "route_geom": "{"type":"MultiLineString","coordinates":[[[9.6095221,47.7123394],[9.6090984,47.7124757],[9.6090581,47.7124611]],[[9.6093245,47.7111408],[9.609277,47.7114257],[9.6092949,47.7116979],[9.6095221,47.7123394]]]}", "route_km": 0.17415832 }
+
+ Testing a GET request by inserting a specific id to check if the API is working properly.
+ Put this link in the browser: http://127.0.0.1:5000/get_route_info/10
+ The response should look like this:
+ 
+
+response = {
+    "description": None,
+    "name": "Random parcels",
+    "origin_geom": {
+        "type": "MultiPolygon",
+        "coordinates": [
+            [
+                [
+                    [9.207400227, 47.782015419],
+                    [9.207351284, 47.781706402],
+                    [9.207209244, 47.781427634],
+                    [9.206988012, 47.781206402],
+                    [9.206709244, 47.781064362],
+                    [9.206400227, 47.781015419],
+                    [9.20609121, 47.781064362],
+                    [9.205812442, 47.781206402],
+                    [9.20559121, 47.781427634],
+                    [9.205449171, 47.781706402],
+                    [9.205400227, 47.782015419],
+                    [9.205449171, 47.782324436],
+                    [9.20559121, 47.782603204],
+                    [9.205812442, 47.782824436],
+                    [9.20609121, 47.782966475],
+                    [9.206400227, 47.783015419],
+                    [9.206709244, 47.782966475],
+                    [9.206988012, 47.782824436],
+                    [9.207209244, 47.782603204],
+                    [9.207351284, 47.782324436],
+                    [9.207400227, 47.782015419]
+                ]
+            ]
+        ]
+    },
+    "polygon_id": 10,
+    "route_geom": {
+        "type": "MultiLineString",
+        "coordinates": [
+            [
+                [9.6095221, 47.7123394],
+                [9.6090984, 47.7124757],
+                [9.6090581, 47.7124611]
+            ],
+            [
+                [9.6093245, 47.7111408],
+                [9.609277, 47.7114257],
+                [9.6092949, 47.7116979],
+                [9.6095221, 47.7123394]
+            ]
+        ]
+    },
+    "route_km": 0.17415832
+}
+
 
  
  Testing POST request with curl (linux terminal)
+ Using curl to send a POST request with JSON data to add a new origin polygon
+ Replace the curl command with equivalent Python code
 
-curl -X POST -H "Content-Type: application/json" -d '{
-  "geom": "{\"type\":\"Polygon\",\"coordinates\":[[[9.405691, 47.694781],[9.405691, 47.695781],[9.406691, 47.695781],[9.406691, 47.694781],[9.405691, 47.694781]]]}",
-  "name": "Square in Markdorf",
-  "description": "A square polygon in Markdorf, Germany"
-}' http://127.0.0.1:5000/add_origin_polygon
+import requests
+
+url = 'http://127.0.0.1:5000/add_origin_polygon'
+headers = {'Content-Type': 'application/json'}
+data = {
+    "geom": "{\"type\":\"Polygon\",\"coordinates\":[[[9.405691, 47.694781],[9.405691, 47.695781],[9.406691, 47.695781],[9.406691, 47.694781],[9.405691, 47.694781]]]}",
+    "name": "Square in Markdorf",
+    "description": "A square polygon in Markdorf, Germany"
+}
+
+response = requests.post(url, json=data, headers=headers)
+
+print(response.json())
+
 
 # Front End:
 The frontend web application offers an intuitive user interface for interacting with the routing system. It is built using HTML, CSS, and JavaScript, which leverages the Leaflet.js library for map visualization.This allows users to make get request by inserting the id of farm locations , then it calculates distances, and visualize route information dynamically. The frontend also seamlessly communicates with the backend API to retrieve routing data and update the user interface in real-time.  
