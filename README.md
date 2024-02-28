@@ -41,6 +41,8 @@ The project relies on two main data sources: OSM geometry and OSM attributes. Th
    - Create 'tb_origin_polygons' table for calculating the shortest path to the nearest main road.
    - Create an index on 'tb_origin_polygons' geometry column for efficient spatial queries.
    ![image](https://github.com/prog-proj-novaims/paved-roads-routes/assets/123589817/3dc459a1-95fd-4b9f-990b-1590ca6b001e)
+3. Create grid table for the are of interest using QGIS, for example, to get the surface information from Overpass.
+
 
 ## Running ETL
 Run 'etl_geom' and 'etl_surface.' If the ETL runs successfully, you will receive the message "ETL process complete"; otherwise, an error will be displayed.
