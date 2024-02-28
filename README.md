@@ -3,8 +3,8 @@
 The "Paved Road Finder" is a Python-based application crafted to efficiently determine the shortest path to the nearest paved road from a given parcel ID. This tool addresses the crucial need for accurate road surface information, essential for scenarios such as emergency response planning and outdoor recreation. Utilizing road network data from sources like OpenStreetMap (OSM) and Overpass Turbo, the application collects details on road geometry and attributes, distinguishing between paved and unpaved roads. Users input the Parcel ID via a user-friendly interface, and the application dynamically calculates the optimal route to the nearest paved road based on the gathered data. The identified path is then visualized on an interactive map interface, providing users with a clear understanding of the route.
 
 ## Objective
-The primary objective of the "Paved Roads Routes" project is to facilitate efficient transportation logistics by generating optimized routes to the nearest main roads, considering its surface attributes. Leveraging data from the OpenStreetMap (OSM) database, the project aims to provide accurate and reliable routing information, ultimately enhancing productivity and reducing transportation costs for any region.
-If the surface and road classes from the route calculator function are changed it is possible to adress different objectives. 
+The primary objective of the "Paved Roads Routes" project is to facilitate efficient transportation logistics by generating optimized routes to the nearest main roads, considering its surface attributes. Leveraging data from the OpenStreetMap (OSM) database, the project aims to provide accurate and reliable routing information, ultimately enhancing productivity and reducing transportation costs for any region. As a secondary product the uploaded polygons data can be used to identify areas in which people are more interested in this kind of information.
+It worth to mention that by changing the surface and road classes from the route calculator function it is possible to adress different objectives. 
 
 ```
 WHERE
