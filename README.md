@@ -30,11 +30,12 @@ The project relies on two main data sources: OSM geometry and OSM attributes. Th
 
 
 3.	Activate Environment
+   
 ![image](https://github.com/prog-proj-novaims/paved-roads-routes/assets/123589817/c289ae7e-5707-408f-955c-20b0bdcb2bd1)
 
 
 
-4.	Install Required Packages from ‘requirements.txt’ file
+5.	Install Required Packages from ‘requirements.txt’ file
 ![image](https://github.com/prog-proj-novaims/paved-roads-routes/assets/123589817/16dbdc13-67dd-49d9-8c4f-29f735d57c79)
 
 
