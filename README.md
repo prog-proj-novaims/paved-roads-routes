@@ -1,4 +1,4 @@
-# Project Title: Paved Roads Finder
+![example](https://github.com/prog-proj-novaims/paved-roads-routes/assets/76739174/a96b7853-dbe1-48bb-ac89-519361a750f2)# Project Title: Paved Roads Finder
 ## Introduction
 The "Paved Road Finder" is a Python-based application crafted to efficiently determine the shortest path to the nearest paved road from a given parcel ID. This tool addresses the crucial need for accurate road surface information, essential for scenarios such as emergency response planning and outdoor recreation. Utilizing road network data from sources like OpenStreetMap (OSM) and Overpass Turbo, the application collects details on road geometry and attributes, distinguishing between paved and unpaved roads. Users input the Parcel ID via a user-friendly interface, and the application dynamically calculates the optimal route to the nearest paved road based on the gathered data. The identified path is then visualized on an interactive map interface, providing users with a clear understanding of the route.
 
@@ -86,7 +86,9 @@ The frontend web application offers an intuitive user interface for interacting 
 
 ## Future Directions and Challenges
 The were two main challenges we faced in this project, the first is allowing user to draw their own polygons representing the location from where the shortest path is calculated. And we are looking forword to resolve this issue to make the application more interactive and also to host a interesting database from places in which people whould have interest in know this kind of information. The second was related to nodes that were close to the origin but the path to them was longer than to the next node from a paved road. It can be a bit difccult to explain and to understand, but as an image can talk for tousand words, this figure ilustrate that 
-[figures/example.png](https://github.com/prog-proj-novaims/paved-roads-routes/blob/276c08518d6e47d991b6e5c098a4762db80e6f84/figures/example.png)
+
+![example](https://github.com/prog-proj-novaims/paved-roads-routes/assets/76739174/3185d992-7d76-4960-afe7-c7179693fe24)
+
 
 Future enhancements may include real-time traffic data integration, alternative route suggestions based on user preferences, and optimizing route planning algorithms for faster computation.
 
