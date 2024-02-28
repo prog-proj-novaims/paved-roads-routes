@@ -5,6 +5,17 @@ The "Paved Road Finder" is a Python-based application crafted to efficiently det
 
 ## Objective
 The primary objective of the "Paved Roads Routes" project is to facilitate efficient transportation logistics by generating optimized routes to the nearest main roads, considering its surface attributes. Leveraging data from the OpenStreetMap (OSM) database, the project aims to provide accurate and reliable routing information, ultimately enhancing productivity and reducing transportation costs for any region.
+If the surface and road classes from the route calculator function are changed it is possible to adress different objectives. 
+
+```
+WHERE
+                    "surface" IN ('asphalt','paved','pavimentado','concrete') AND
+                    "fclass" IN ('motorway','motorway_junction','motorway_link','primary',
+                    			'primary_link','road','secondary','secondary_link',
+                    			'tertiary','tertiary_link','trunk','trunk_link')
+```
+
+
 
 ## Data Methodology
 The project relies on two main data sources: OSM geometry and OSM attributes. The OSM geometry data, downloadable from [GeoFabrik](https://download.geofabrik.de), contains detailed information about road networks, including road segments, intersections, and geographic coordinates. OSM attributes, obtained through the Overpass API ([Overpass API](https://overpass.kumi.systems/api/interpreter)), offer additional insights into road classifications, surface data, and other relevant attributes. A PostgreSQL database serves as the central repository for storing and managing the extracted OSM data in this project. The data undergoes an Extract, Transform, Load (ETL) process, initially downloaded in PBF format, filtered using 'osmconvert,' and then imported into the PostgreSQL database using 'osm2pgrouting.' The Flask-based backend API handles HTTP requests related to route calculations, while the front-end is built using HTML, CSS, and JavaScript, leveraging the Leaflet.js library for map visualization.
@@ -84,13 +95,3 @@ Improvements in UI design and deployment on scalable cloud platforms can enhance
 
 ## Conclusion
 In conclusion, the "Paved Roads Routes" project addresses the critical need for efficient route planning in agricultural contexts. By harnessing the power of OSM data, database management, ETL processes, and web technologies, the project provides a valuable tool for farmers to optimize transportation logistics and enhance productivity. With continued development and enhancements, the project holds significant potential to contribute to agricultural infrastructure planning and management, ultimately benefiting farming communities worldwide.
-If the surface and road classes from the route calculator function are changed it is possible to adress different objectives. 
-
-´´´
-WHERE
-                    "surface" IN ('asphalt','paved','pavimentado','concrete') AND
-                    "fclass" IN ('motorway','motorway_junction','motorway_link','primary',
-                    			'primary_link','road','secondary','secondary_link',
-                    			'tertiary','tertiary_link','trunk','trunk_link')
-                       ´´´
-
