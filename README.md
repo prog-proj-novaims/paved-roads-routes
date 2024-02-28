@@ -10,7 +10,7 @@ Furthermore, the flexibility of this approach allows for adaptation to various g
 
 
 # Objective
-The primary objective of the " paved-roads-routes-main" project is to facilitate efficient transportation logistics for farmers by generating optimized routes from farm locations to the nearest main roads. By leveraging data from the OpenStreetMap (OSM) database, the project aims to provide farmers with accurate and reliable routing information, ultimately enhancing productivity and reducing transportation costs in Baden-Württemberg region, Germany.
+The primary objective of the " paved-roads-routes-main" project is to facilitate efficient transportation logistics for farmers by generating optimized routes from farm locations to the nearest main roads. By leveraging data from the OpenStreetMap (OSM) database, the project aims to provide farmers with accurate and reliable routing information, ultimately enhancing productivity and reducing transportation costs in Bavaria region, Germany.
 
 
 # Data Methodology
