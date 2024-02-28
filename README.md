@@ -1,5 +1,4 @@
-# Project Title: Paved Roads Routes
-
+# Project Title: Paved Roads Finder
 ## Introduction
 The "Paved Road Finder" is a Python-based application crafted to efficiently determine the shortest path to the nearest paved road from a given parcel ID. This tool addresses the crucial need for accurate road surface information, essential for scenarios such as emergency response planning and outdoor recreation. Utilizing road network data from sources like OpenStreetMap (OSM) and Overpass Turbo, the application collects details on road geometry and attributes, distinguishing between paved and unpaved roads. Users input the Parcel ID via a user-friendly interface, and the application dynamically calculates the optimal route to the nearest paved road based on the gathered data. The identified path is then visualized on an interactive map interface, providing users with a clear understanding of the route.
 
