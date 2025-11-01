@@ -16,7 +16,7 @@ def load_config():
 
 def download_osm_pbf(url):
     """
-    Download an OSM PBF file from the provided URL.
+    Download an OSM PBF file from the provided url.
 
     Args:
         url (str): URL of the OSM PBF file.
