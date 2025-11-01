@@ -7,7 +7,7 @@ import yaml
 
 def load_config():
     """
-    Load configuration settings from a YAML file.
+    Loading configuration settings from a YAML file.
 
     Returns:
         dict: Configuration settings read from the YAML file.
